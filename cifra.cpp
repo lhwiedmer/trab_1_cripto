@@ -10,6 +10,29 @@
 #include <stdlib.h>
 
 /**
+ * @brief Le o conteudo de arqRead para um buffer
+ * @param Arquivo com conteudo a ser lido
+ * @return Ponteiro para string com o conteúdo
+ */
+size_t readFileToBuffer(FILE* arqRead, char* arqMem) {
+    fseek(arqRead, 0, SEEK_END);
+    size_t size = ftell(arqRead);
+    arqMem = (char*)malloc(size);
+    if (!arqMem) {
+        printf("Não deu pra alocar memória\n");
+        exit(2);
+    }
+    rewind(arqRead);
+    size_t sizeRead = fread(arqMem, 1, size, arqRead);
+    if (sizeRead != size) {
+        printf("SizeRead: %zu\n Size: %zu\n", sizeRead, size);
+        printf("Não conseguiu ler tudo pro buffer\n");
+        exit(3);
+    }
+    return sizeRead;
+}
+
+/**
  * 1 - Lê arquivo com nome passado no argv e coloca em um buffer
  * 2 - Faz cifra de substituição
  * 3 - Faz cifra de transposição
@@ -20,32 +43,20 @@ int main(int argc, char** argv) {
     FILE* arq;
     arq = fopen(argv[1], "r");
     if (!arq) {
-        printf("Não deu pra abir o arquivo\n");
+        printf("Não deu pra abir o arquivo de leitura\n");
         exit(1);
     }
-    fseek(arq, 0, SEEK_END);
-    size_t size = ftell(arq);
-    char* arqMem = (char*)malloc(size);
-    if (!arqMem) {
-        printf("Não deu pra alocar memória\n");
-        exit(2);
-    }
-    rewind(arq);
-    size_t sizeRead = fread(arqMem, 1, size, arq);
-    if (sizeRead != size) {
-        printf("SizeRead: %zu\n Size: %zu\n", sizeRead, size);
-        printf("Não conseguiu ler tudo pro buffer\n");
-        exit(3);
-    }
+    char* arqMem;
+    size_t sizeRead = readFileToBuffer(arq, arqMem);
     fclose(arq);
     FILE* arq2 = fopen(argv[2], "w+");
     if (!arq) {
-        printf("Não deu pra abrir o arquivo 2\n");
+        printf("Não deu pra abrir o arquivo de escrita\n");
         exit(1);
     }
-    size_t sizeWritten = fwrite(arqMem, 1, size, arq2);
-    if (sizeWritten != size) {
-        printf("Não conseguiu ecrever tudo\n");
+    size_t sizeWritten = fwrite(arqMem, 1, sizeRead, arq2);
+    if (sizeWritten != sizeRead) {
+        printf("Não conseguiu escrever tudo\n");
         exit(4);
     }
     free(arqMem);
