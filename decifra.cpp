@@ -1,18 +1,10 @@
 /**
  * @file decifra.cpp
- * @brief Implementação da classe Decifra, para decifrar mensagens cifradas.
+ * @brief Implementação das funções para decifrar mensagens cifradas com o
+ * programa "cifra".
  * @author Luiz Henrique Murback Wiedmer
  * @date 2025-09-01
  * @version 1.0
  */
 
-class decifra {
-  private:
-    /* data */
-  public:
-    decifra(/* args */);
-};
-
-decifra::decifra(/* args */) {}
-
-int main() {}
+int main(int argc, char** argv) {}
