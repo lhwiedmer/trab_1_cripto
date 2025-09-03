@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "utf8.h"
+
 /**
  * @brief Le o conteudo de arqRead para um buffer
  * @param Arquivo com conteudo a ser lido
