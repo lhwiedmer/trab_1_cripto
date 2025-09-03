@@ -49,6 +49,9 @@ int main(int argc, char** argv) {
     char* arqMem;
     size_t sizeRead = readFileToBuffer(arq, arqMem);
     fclose(arq);
+
+    /* Colocar aqui o codigo de cifra em si */
+
     FILE* arq2 = fopen(argv[2], "w+");
     if (!arq) {
         printf("Não deu pra abrir o arquivo de escrita\n");
