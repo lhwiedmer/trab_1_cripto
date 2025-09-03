@@ -9,17 +9,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "utf8.h"
+/**
+ * @brief Faz a substituição de cada byte do buffer
+ * @param source Origem dos bytes
+ * @param dest Destino dos bytesapós a substituição
+ */
+void substituteBytes(unsigned char* source, unsigned char* dest) {
+    // A ideia eh substituir os bytes individualmente ao invés de caracter
+    // indvidual,
+}
 
 /**
  * @brief Le o conteudo de arqRead para um buffer
  * @param Arquivo com conteudo a ser lido
  * @return Ponteiro para string com o conteúdo
  */
-size_t readFileToBuffer(FILE* arqRead, char* arqMem) {
+size_t readFileToBuffer(FILE* arqRead, unsigned char* arqMem) {
     fseek(arqRead, 0, SEEK_END);
     size_t size = ftell(arqRead);
-    arqMem = (char*)malloc(size);
+    arqMem = (unsigned char*)malloc(size);
     if (!arqMem) {
         printf("Não deu pra alocar memória\n");
         exit(2);
@@ -48,7 +56,7 @@ int main(int argc, char** argv) {
         printf("Não deu pra abir o arquivo de leitura\n");
         exit(1);
     }
-    char* arqMem;
+    unsigned char* arqMem;  // buffer de bytes
     size_t sizeRead = readFileToBuffer(arq, arqMem);
     fclose(arq);
 
