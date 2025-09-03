@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "beale/codificador.h"
+#include "beale/gerador_de_chaves.h"
+
 /**
  * @brief Faz a substituição de cada byte do buffer
  * @param source Origem dos bytes
