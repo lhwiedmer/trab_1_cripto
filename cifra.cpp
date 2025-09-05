@@ -16,7 +16,7 @@
 enum op { SUM, SUB };
 
 /**
- * @brief Faz a substituição de cada byte do buffer
+ * @brief Cifra o conteudo de source
  * @param source Origem dos bytes
  * @param n Tamanho de source
  * @param dest Destino dos bytes após a substituição
@@ -27,7 +27,7 @@ void encodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
                     char* keyWord, enum op opr) {
     unsigned char* decBuffer = (unsigned char*)malloc(n);
     if (!decBuffer) {
-        printf("Não conseguiu alocar o buffer de decode\n");
+        printf("Não conseguiu alocar o buffer de encode\n");
         exit(2);
     }
     size_t keySize = strlen(keyWord);
@@ -51,26 +51,33 @@ void encodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
 }
 
 /**
- * @brief Le o conteudo de arqRead para um buffer
- * @param Arquivo com conteudo a ser lido
- * @return Ponteiro para string com o conteúdo
+ * @brief Le o conteudo de arqRead e o retorna em um buffer
+ * @param arqRead Arquivo com conteudo a ser lido
+ * @param size Tamanho do buffer retornado
+ * @return Ponteiro para buffer de bytes com o conteúdo
  */
-size_t readFileToBuffer(FILE* arqRead, unsigned char* arqMem) {
+unsigned char* readFileToBuffer(FILE* arqRead, size_t* size) {
     fseek(arqRead, 0, SEEK_END);
-    size_t size = ftell(arqRead);
-    arqMem = (unsigned char*)malloc(size);
+    *size = ftell(arqRead);
+    unsigned char* arqMem = (unsigned char*)malloc(*size);
     if (!arqMem) {
         printf("Não deu pra alocar o buffer de leitura\n");
         exit(2);
     }
     rewind(arqRead);
-    size_t sizeRead = fread(arqMem, 1, size, arqRead);
-    if (sizeRead != size) {
-        printf("SizeRead: %zu\n Size: %zu\n", sizeRead, size);
+    size_t sizeRead = fread(arqMem, 1, *size, arqRead);
+    if (sizeRead != *size) {
+        printf("SizeRead: %zu\n Size: %zu\n", sizeRead, *size);
         printf("Não conseguiu ler tudo pro buffer\n");
         exit(3);
     }
-    return sizeRead;
+    return arqMem;
+}
+
+void printCorrectUse() {
+    printf("Uso correto:\n");
+    printf("./cifra <mensagemClara> <arqDest> <keyWord> <op>\n");
+    printf("op pode ser sum ou sub\n");
 }
 
 /**
@@ -81,16 +88,19 @@ size_t readFileToBuffer(FILE* arqRead, unsigned char* arqMem) {
  * Obs(Deve ser passado no arg, os nome dos arquivos e uma chave)
  */
 int main(int argc, char** argv) {
+    if (argc != 5) {
+        printf("Número de argumentos inválido\n");
+        printCorrectUse();
+        exit(5);
+    }
     FILE* arq;
     arq = fopen(argv[1], "r");
-    fclose(arq);
-
     if (!arq) {
         printf("Não deu pra abir o arquivo de leitura\n");
         exit(1);
     }
-    unsigned char* arqMem;  // buffer de bytes
-    size_t n = readFileToBuffer(arq, arqMem);
+    size_t n;
+    unsigned char* arqMem = readFileToBuffer(arq, &n);  // buffer de bytes
     unsigned char* write_buffer = (unsigned char*)malloc(n);
     if (!write_buffer) {
         printf("Não deu pra alocar o buffer de escrita");
@@ -104,22 +114,24 @@ int main(int argc, char** argv) {
     } else if (!strcmp("sub", argv[4])) {
         opr = SUB;
     } else {
-        printf("Uso errado\n");
+        printf("op inválida\n");
+        printCorrectUse();
         exit(5);
     }
     encodeVigenere(arqMem, n, write_buffer, keyWord, opr);
+    free(arqMem);
 
     FILE* arq2 = fopen(argv[2], "w+");
-    if (!arq) {
+    if (!arq2) {
         printf("Não deu pra abrir o arquivo de escrita\n");
         exit(1);
     }
-    size_t sizeWritten = fwrite(arqMem, 1, n, arq2);
+    size_t sizeWritten = fwrite(write_buffer, 1, n, arq2);
     if (sizeWritten != n) {
         printf("Não conseguiu escrever tudo\n");
         exit(4);
     }
-    free(arqMem);
+    free(write_buffer);
     fclose(arq2);
     return 0;
 }
