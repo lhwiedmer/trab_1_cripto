@@ -76,7 +76,7 @@ unsigned char* readFileToBuffer(FILE* arqRead, size_t* size) {
 
 void printCorrectUse() {
     printf("Uso correto:\n");
-    printf("./cifra <mensagemClara> <arqDest> <keyWord> <op>\n");
+    printf("./decifra <mensagemCifrada> <arqDest> <keyWord> <op>\n");
     printf("op pode ser sum ou sub\n");
 }
 

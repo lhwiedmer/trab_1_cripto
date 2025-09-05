@@ -47,7 +47,7 @@ void decodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
         }
         if (keySize < n) {
             for (size_t i = keySize; i < n; i++) {
-                dest[i] = source[i] - dest[i - keySize];
+                dest[i] = source[i] + dest[i - keySize];
             }
         }
     }
