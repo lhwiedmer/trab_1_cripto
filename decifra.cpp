@@ -21,34 +21,22 @@ enum op { SUM, SUB };
  * @param n Tamanho de source
  * @param dest Destino dos bytes após a substituição
  * @param keyWord Palavra usada para fazer a cifra
- * @param opr Operação feita em source, pode ser SUM ou SUB
  */
 void decodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
-                    char* keyWord, enum op opr) {
+                    char* keyWord) {
     unsigned char* decBuffer = (unsigned char*)malloc(n);
     if (!decBuffer) {
         printf("Não conseguiu alocar o buffer de decode\n");
         exit(2);
     }
     size_t keySize = strlen(keyWord);
-    if (opr == SUM) {
-        // Faz operação inversa pra recuperar
-        for (size_t i = 0; (i < keySize) && (i < n); i++) {
-            dest[i] = source[i] - keyWord[i];
-        }
-        if (keySize < n) {
-            for (size_t i = keySize; i < n; i++) {
-                dest[i] = source[i] - dest[i - keySize];
-            }
-        }
-    } else {
-        for (size_t i = 0; (i < keySize) && (i < n); i++) {
-            dest[i] = source[i] + keyWord[i];
-        }
-        if (keySize < n) {
-            for (size_t i = keySize; i < n; i++) {
-                dest[i] = source[i] + dest[i - keySize];
-            }
+    // Faz operação inversa pra recuperar
+    for (size_t i = 0; (i < keySize) && (i < n); i++) {
+        dest[i] = source[i] - keyWord[i];
+    }
+    if (keySize < n) {
+        for (size_t i = keySize; i < n; i++) {
+            dest[i] = source[i] - dest[i - keySize];
         }
     }
 }
@@ -79,8 +67,7 @@ unsigned char* readFileToBuffer(FILE* arqRead, size_t* size) {
 
 void printCorrectUse() {
     printf("Uso correto:\n");
-    printf("./cifra <mensagemClara> <arqDest> <keyWord> <op>\n");
-    printf("op pode ser sum ou sub\n");
+    printf("./decifra <mensagemCifrada> <arqDest> <keyWord>\n");
 }
 
 /**
@@ -91,7 +78,7 @@ void printCorrectUse() {
  * Obs(Deve ser passado no arg, os nome dos arquivos e uma chave)
  */
 int main(int argc, char** argv) {
-    if (argc != 5) {
+    if (argc != 4) {
         printf("Número de argumentos inválido\n");
         printCorrectUse();
         exit(5);
@@ -111,17 +98,7 @@ int main(int argc, char** argv) {
     }
     fclose(arq);
     char* keyWord = argv[3];
-    enum op opr;
-    if (!strcmp("sum", argv[4])) {
-        opr = SUM;
-    } else if (!strcmp("sub", argv[4])) {
-        opr = SUB;
-    } else {
-        printf("op inválida\n");
-        printCorrectUse();
-        exit(5);
-    }
-    decodeVigenere(arqMem, n, write_buffer, keyWord, opr);
+    decodeVigenere(arqMem, n, write_buffer, keyWord);
     free(arqMem);
 
     FILE* arq2 = fopen(argv[2], "w+");

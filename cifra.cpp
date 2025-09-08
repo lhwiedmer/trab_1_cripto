@@ -11,20 +11,14 @@
 #include <string.h>
 
 /**
- * @brief Tipo de operação
- */
-enum op { SUM, SUB };
-
-/**
  * @brief Cifra o conteudo de source
  * @param source Origem dos bytes
  * @param n Tamanho de source
  * @param dest Destino dos bytes após a substituição
  * @param keyWord Palavra usada para fazer a cifra
- * @param opr Operação feita em source, pode ser SUM ou SUB
  */
 void encodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
-                    char* keyWord, enum op opr) {
+                    char* keyWord) {
     unsigned char* decBuffer = (unsigned char*)malloc(n);
     if (!decBuffer) {
         printf("Não conseguiu alocar o buffer de encode\n");
@@ -39,14 +33,8 @@ void encodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
         // Buffer eh a igual ou menor que a chave
         memcpy(decBuffer, keyWord, n);
     }
-    if (opr == SUM) {
-        for (size_t i = 0; i < n; i++) {
-            dest[i] = source[i] + decBuffer[i];
-        }
-    } else {
-        for (size_t i = 0; i < n; i++) {
-            dest[i] = source[i] - decBuffer[i];
-        }
+    for (size_t i = 0; i < n; i++) {
+        dest[i] = source[i] + decBuffer[i];
     }
 }
 
@@ -76,8 +64,7 @@ unsigned char* readFileToBuffer(FILE* arqRead, size_t* size) {
 
 void printCorrectUse() {
     printf("Uso correto:\n");
-    printf("./decifra <mensagemCifrada> <arqDest> <keyWord> <op>\n");
-    printf("op pode ser sum ou sub\n");
+    printf("./cifra <arqClaro> <arqDest> <keyWord>\n");
 }
 
 /**
@@ -88,7 +75,7 @@ void printCorrectUse() {
  * Obs(Deve ser passado no arg, os nome dos arquivos e uma chave)
  */
 int main(int argc, char** argv) {
-    if (argc != 5) {
+    if (argc != 4) {
         printf("Número de argumentos inválido\n");
         printCorrectUse();
         exit(5);
@@ -108,17 +95,7 @@ int main(int argc, char** argv) {
     }
     fclose(arq);
     char* keyWord = argv[3];
-    enum op opr;
-    if (!strcmp("sum", argv[4])) {
-        opr = SUM;
-    } else if (!strcmp("sub", argv[4])) {
-        opr = SUB;
-    } else {
-        printf("op inválida\n");
-        printCorrectUse();
-        exit(5);
-    }
-    encodeVigenere(arqMem, n, write_buffer, keyWord, opr);
+    encodeVigenere(arqMem, n, write_buffer, keyWord);
     free(arqMem);
 
     FILE* arq2 = fopen(argv[2], "w+");
