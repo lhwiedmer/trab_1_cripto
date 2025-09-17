@@ -1,6 +1,6 @@
 /**
  * @file cifra.cpp
- * @brief Implementação das funções para cifrar mensagens UTF-8.
+ * @brief Implementação de um programa para cifrar mensagens UTF-8.
  * @author Luiz Henrique Murback Wiedmer
  * @date 2025-09-01
  * @version 1.0
