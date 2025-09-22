@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <chrono>
+
 /**
  * @brief Cifra o conteudo de source
  * @param source Origem dos bytes
@@ -95,7 +97,17 @@ int main(int argc, char** argv) {
     }
     fclose(arq);
     char* keyWord = argv[3];
+
+    auto begin = std::chrono::high_resolution_clock::now();
+
     encodeVigenere(arqMem, n, write_buffer, keyWord);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+
+    printf("Time measured: %.3f seconds.\n", elapsed.count() * 1e-9);
+
     free(arqMem);
 
     FILE* arq2 = fopen(argv[2], "w+");

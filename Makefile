@@ -3,17 +3,15 @@ CFLAGS=-Wall -g -O3
 
 all: cifra decifra
 
-cifra: cifra.o
-	$(CC) $(CFLAGS) -o cifra cifra.o
+cifra: cifra.cpp
+	$(CC) $(CFLAGS) -o cifra cifra.cpp
 
-cifra.o: cifra.cpp
-	$(CC) $(CFLAGS) -c cifra.cpp
+decifra: decifra.cpp
+	$(CC) $(CFLAGS) -o decifra decifra.cpp
 
-decifra: decifra.o
-	$(CC) $(CFLAGS) -o decifra decifra.o
+aesEncrypt: aesEncrypt.cpp
+	$(CC) $(CFLAGS) -o aesEncrypt aesEncrypt.cpp -lssl -lcrypto
 
-decifra.o: decifra.cpp
-	$(CC) $(CFLAGS) -c decifra.cpp
 
 clean:
-	rm -f *.o cifra decifra
+	rm -f *.o cifra decifra aesEncrypt aesDecrypt
