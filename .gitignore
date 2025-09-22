@@ -1,5 +1,6 @@
 *.txt
 *.o
+*.json
 aesEncrypt
 cifra
 decifra

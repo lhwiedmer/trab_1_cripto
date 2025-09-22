@@ -42,7 +42,7 @@ unsigned char* readFileToBuffer(FILE* arqRead, size_t* size) {
 }
 
 void handleErrors(int n) {
-    printf("Houve o erro %d\n", n);
+    printf("Houve o erro %d na encriptacao\n", n);
     exit(n);
 }
 
@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
     }
     size_t n;
     unsigned char* arqMem = readFileToBuffer(arq, &n);  // buffer de bytes
-    unsigned char* writeBuffer = (unsigned char*)malloc(n + 256);
+    unsigned char* writeBuffer = (unsigned char*)malloc(n + 16);
     if (!writeBuffer) {
         printf("Não deu pra alocar o buffer de escrita");
         exit(2);
@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
     auto elapsed =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 
-    printf("Time measured: %.3f seconds.\n", elapsed.count() * 1e-9);
+    printf("Tempo: %.5f seconds.\n", elapsed.count() * 1e-9);
 
     free(arqMem);
 

@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
     auto elapsed =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 
-    printf("Time measured: %.3f seconds.\n", elapsed.count() * 1e-9);
+    printf("Tempo: %.5f seconds.\n", elapsed.count() * 1e-9);
 
     free(arqMem);
 

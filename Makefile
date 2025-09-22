@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall -g -O3
 
-all: cifra decifra
+all: cifra decifra aesDecrypt aesEncrypt
 
 cifra: cifra.cpp
 	$(CC) $(CFLAGS) -o cifra cifra.cpp
@@ -11,6 +11,9 @@ decifra: decifra.cpp
 
 aesEncrypt: aesEncrypt.cpp
 	$(CC) $(CFLAGS) -o aesEncrypt aesEncrypt.cpp -lssl -lcrypto
+
+aesDecrypt: aesDecrypt.cpp
+	$(CC) $(CFLAGS) -o aesDecrypt aesDecrypt.cpp -lssl -lcrypto
 
 
 clean:
