@@ -55,12 +55,3 @@ done
 make clean
 
 echo "Testes concluídos."
-
-
-
-
-
-
-
-
-
