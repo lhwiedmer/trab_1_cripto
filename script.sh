@@ -6,7 +6,7 @@ files=(
     "Middlemarch.txt"
     )
 key="leon"
-output_file="tempos_execucao.txt"
+output_file="tempos_execucao.log"
 
 make
 
