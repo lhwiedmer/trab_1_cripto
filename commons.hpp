@@ -2,7 +2,7 @@
 #include <string>
 
 #define FIRST_RAIL 0
-#define LAST_RAIL (rail_size - 1)
+#define LAST_RAIL (railSize - 1)
 
 #define DECODE 0
 #define ENCODE 1
@@ -10,11 +10,6 @@
 constexpr size_t BUFF_SIZE = 1024;
 constexpr size_t MIN_RAIL_SIZE = 3;
 constexpr size_t MAX_RAIL_SIZE = 32;
-
-/**
- * @brief Tipo de operação
- */
-enum op { SUM, SUB };
 
 /**
  * @brief Le o conteudo de arqRead e o retorna em um buffer

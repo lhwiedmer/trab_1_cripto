@@ -45,65 +45,65 @@ void decodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
 
 /**
  * @brief Decifra um bloco de texto com o método de trilhos.
- * @param[in]  source Origem dos bytes
- * @param[in]  n Tamanho de source
+ * @param[in]  sourceChunk Origem dos bytes
+ * @param[in]  chunkSize Tamanho de source
  * @param[in]  keyWord Palavra usada para decodificar.
  * @return String com o conteúdo do bloco descriptografado.
  */
-std::string decodeRailChunk(const unsigned char* source_chunk,
-                            size_t chunk_size, size_t rail_size) {
-    std::string decoded_chunk(chunk_size, 0);
+std::string decodeRailChunk(const unsigned char* sourceChunk, size_t chunkSize,
+                            size_t rail_size) {
+    std::string decodedChunk(chunkSize, 0);
     size_t period = 2 * (rail_size - 1);
-    size_t source_idx = 0;
+    size_t sourceIdx = 0;
 
     for (size_t rail = 0; rail < rail_size; rail++) {
         size_t i = rail;
-        while (i < chunk_size) {
-            decoded_chunk[i] = source_chunk[source_idx++];
+        while (i < chunkSize) {
+            decodedChunk[i] = sourceChunk[sourceIdx++];
 
             /* Os trilhos do meio têm dois caracteres por ciclo */
             if (rail != FIRST_RAIL && rail != LAST_RAIL) {
-                size_t second_pos = i + period - 2 * rail;
-                if (second_pos < chunk_size) {
-                    decoded_chunk[second_pos] = source_chunk[source_idx++];
+                size_t secondPos = i + period - 2 * rail;
+                if (secondPos < chunkSize) {
+                    decodedChunk[secondPos] = sourceChunk[sourceIdx++];
                 }
             }
             i += period;
         }
     }
 
-    return decoded_chunk;
+    return decodedChunk;
 }
 
 /**
  * @brief Decifra o conteúdo de source com o método de trilhos.
  * @param[in]  source Origem dos bytes
- * @param[in]  n Tamanho de source
+ * @param[in]  sourceSize Tamanho de source
  * @param[in]  keyWord Palavra usada para decodificar.
  * @return String com o conteúdo de source descriptografado.
  */
-std::string decodeRail(const unsigned char* source, size_t source_size,
+std::string decodeRail(const unsigned char* source, size_t sourceSize,
                        char* keyWord) {
-    size_t key_size = strlen(keyWord);
-    size_t rail_size = std::max(key_size, MIN_RAIL_SIZE);
+    size_t keySize = strlen(keyWord);
+    size_t railSize = std::max(keySize, MIN_RAIL_SIZE);
     std::string dest;
-    dest.reserve(source_size);
+    dest.reserve(sourceSize);
     size_t offset = 0;
 
-    while (offset < source_size) {
-        size_t chunk_size = std::min(BUFF_SIZE, source_size - offset);
+    while (offset < sourceSize) {
+        size_t chunkSize = std::min(BUFF_SIZE, sourceSize - offset);
 
         // MIN_RAIL_SIZE < first word length < MAX_RAIL_SIZE
-        size_t word_len = first_word(source + offset, chunk_size).size();
-        size_t next_rail_size =
-            std::min(MAX_RAIL_SIZE, std::max(word_len, MIN_RAIL_SIZE));
+        size_t wordLen = first_word(source + offset, chunkSize).size();
+        size_t nextRailSize =
+            std::min(MAX_RAIL_SIZE, std::max(wordLen, MIN_RAIL_SIZE));
 
-        std::string decoded_chunk =
-            decodeRailChunk(source + offset, chunk_size, rail_size);
-        dest.append(decoded_chunk);
+        std::string decodedChunk =
+            decodeRailChunk(source + offset, chunkSize, railSize);
+        dest.append(decodedChunk);
 
-        rail_size = next_rail_size;
-        offset += chunk_size;
+        railSize = nextRailSize;
+        offset += chunkSize;
     }
 
     return dest;
@@ -131,23 +131,23 @@ int main(int argc, char** argv) {
     size_t n;
     unsigned char* arqMem = readFileToBuffer(arq, &n);  // buffer de bytes
     fclose(arq);
-    unsigned char* write_buffer = (unsigned char*)malloc(n);
-    if (!write_buffer) {
+    unsigned char* writeBuffer = (unsigned char*)malloc(n);
+    if (!writeBuffer) {
         printf("Não deu pra alocar o buffer de escrita");
         exit(2);
     }
     char* keyWord = argv[3];
-
     auto begin = std::chrono::high_resolution_clock::now();
 
-    decodeVigenere(arqMem, n, write_buffer, keyWord);
+    decodeVigenere(arqMem, n, writeBuffer, keyWord);
     free(arqMem);
-    std::string railResult = decodeRail(write_buffer, n, keyWord);
+    std::string railResult = decodeRail(writeBuffer, n, keyWord);
+
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-
     printf("Tempo: %.5f seconds.\n", elapsed.count() * 1e-9);
+
     FILE* arq2 = fopen(argv[2], "w+");
     if (!arq2) {
         printf("Não deu pra abrir o arquivo de escrita\n");
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
         printf("Não conseguiu escrever tudo\n");
         exit(4);
     }
-    free(write_buffer);
+    free(writeBuffer);
     fclose(arq2);
     return 0;
 }

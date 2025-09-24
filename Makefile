@@ -18,13 +18,11 @@ decifra.o: decifra.cpp commons.hpp
 commons.o: commons.cpp commons.hpp
 	$(CC) $(CFLAGS) -c commons.cpp
 
-
 aesEncrypt: aesEncrypt.cpp
 	$(CC) $(CFLAGS) -o aesEncrypt aesEncrypt.cpp -lssl -lcrypto
 
 aesDecrypt: aesDecrypt.cpp
 	$(CC) $(CFLAGS) -o aesDecrypt aesDecrypt.cpp -lssl -lcrypto
-
 
 clean:
 	rm -f *.o cifra decifra aesEncrypt aesDecrypt

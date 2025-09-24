@@ -1,9 +1,9 @@
+#include "commons.hpp"
+
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include "commons.hpp"
 
 unsigned char* readFileToBuffer(FILE* arqRead, size_t* size) {
     fseek(arqRead, 0, SEEK_END);
