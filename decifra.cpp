@@ -151,7 +151,10 @@ int main(int argc, char** argv) {
     decodeVigenere(source, n, dest, keyWord);
 
     free(source);
-    std::string railResult = decodeRail(dest, n, keyWord);
+    std::string railResult;
+    for (int i = 0; i < 10; i++) {
+        railResult = decodeRail(dest, n, keyWord);
+    }
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);

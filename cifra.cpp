@@ -136,8 +136,10 @@ int main(int argc, char** argv) {
     }
     char* keyWord = argv[3];
     auto begin = std::chrono::high_resolution_clock::now();
-
-    std::string railResult = encodeRail(arqMem, n, keyWord);
+    std::string railResult;
+    for (int i = 0; i < 10; i++) {
+        railResult = encodeRail(arqMem, n, keyWord);
+    }
     encodeVigenere(reinterpret_cast<const unsigned char*>(railResult.c_str()),
                    n, writeBuffer, keyWord);
 
