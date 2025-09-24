@@ -138,9 +138,21 @@ int main(int argc, char** argv) {
     auto begin = std::chrono::high_resolution_clock::now();
 
     std::string railResult = encodeRail(arqMem, n, keyWord);
-    free(arqMem);
     encodeVigenere(reinterpret_cast<const unsigned char*>(railResult.c_str()),
                    n, writeBuffer, keyWord);
+
+    unsigned char* source = writeBuffer;
+    unsigned char* dest = arqMem;
+
+    for (int i = 0; i < 8; i++) {
+        encodeVigenere(source, n, dest, keyWord);
+        unsigned char* temp = source;
+        source = dest;
+        dest = temp;
+    }
+    encodeVigenere(source, n, dest, keyWord);
+
+    free(source);
 
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed =
@@ -152,12 +164,12 @@ int main(int argc, char** argv) {
         printf("Não deu pra abrir o arquivo de escrita\n");
         exit(1);
     }
-    size_t sizeWritten = fwrite(writeBuffer, 1, n, arq2);
+    size_t sizeWritten = fwrite(dest, 1, n, arq2);
     if (sizeWritten != n) {
         printf("Não conseguiu escrever tudo\n");
         exit(4);
     }
-    free(writeBuffer);
+    free(dest);
     fclose(arq2);
     return 0;
 }

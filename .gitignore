@@ -1,6 +1,7 @@
 *.txt
 *.o
 *.json
+*.log
 aesEncrypt
 cifra
 decifra

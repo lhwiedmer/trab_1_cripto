@@ -51,12 +51,12 @@ void decodeVigenere(unsigned char* source, size_t n, unsigned char* dest,
  * @return String com o conteúdo do bloco descriptografado.
  */
 std::string decodeRailChunk(const unsigned char* sourceChunk, size_t chunkSize,
-                            size_t rail_size) {
+                            size_t railSize) {
     std::string decodedChunk(chunkSize, 0);
-    size_t period = 2 * (rail_size - 1);
+    size_t period = 2 * (railSize - 1);
     size_t sourceIdx = 0;
 
-    for (size_t rail = 0; rail < rail_size; rail++) {
+    for (size_t rail = 0; rail < railSize; rail++) {
         size_t i = rail;
         while (i < chunkSize) {
             decodedChunk[i] = sourceChunk[sourceIdx++];
@@ -139,10 +139,19 @@ int main(int argc, char** argv) {
     char* keyWord = argv[3];
     auto begin = std::chrono::high_resolution_clock::now();
 
-    decodeVigenere(arqMem, n, writeBuffer, keyWord);
-    free(arqMem);
-    std::string railResult = decodeRail(writeBuffer, n, keyWord);
+    unsigned char* source = arqMem;
+    unsigned char* dest = writeBuffer;
 
+    for (int i = 0; i < 9; i++) {
+        decodeVigenere(source, n, dest, keyWord);
+        unsigned char* temp = source;
+        source = dest;
+        dest = temp;
+    }
+    decodeVigenere(source, n, dest, keyWord);
+
+    free(source);
+    std::string railResult = decodeRail(dest, n, keyWord);
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
@@ -158,7 +167,6 @@ int main(int argc, char** argv) {
         printf("Não conseguiu escrever tudo\n");
         exit(4);
     }
-    free(writeBuffer);
     fclose(arq2);
     return 0;
 }
