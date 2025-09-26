@@ -15,8 +15,6 @@
 
 #include <chrono>
 
-struct timeval tval_before, tval_after, tval_result;
-
 /**
  * @brief Le o conteudo de arqRead e o retorna em um buffer
  * @param arqRead Arquivo com conteudo a ser lido
@@ -58,11 +56,7 @@ int encrypt(unsigned char* plaintext, int plaintext_len, unsigned char* key,
     if (!(ctx = EVP_CIPHER_CTX_new())) handleErrors(1);
 
     /*
-     * Initialise the encryption operation. IMPORTANT - ensure you use a key
-     * and IV size appropriate for your cipher
-     * In this example we are using 256 bit AES (i.e. a 256 bit key). The
-     * IV size for *most* modes is the same as the block size. For AES this
-     * is 128 bits
+     * Initialise the encryption operation.
      */
     if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, key, NULL))
         handleErrors(2);
