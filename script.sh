@@ -1,6 +1,7 @@
 #!/bin/bash
 
 files=(
+    "test_file.txt"
     "The_Arctic_legions.txt" 
     "Arts_and_crafts_of_old_Japan.txt"
     "Middlemarch.txt"
